@@ -167,7 +167,7 @@ export default function HongdaeMap() {
       {/* Title overlay */}
       <div
         style={{
-          position: 'absolute', top: 16, left: 16,
+          position: 'absolute', top: 12, left: 12,
           background: overlayBg, backdropFilter: 'blur(8px)',
           borderRadius: 14, padding: '10px 16px',
           boxShadow: '0 2px 12px rgba(0,0,0,0.15)', pointerEvents: 'none',

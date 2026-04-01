@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 const PUB_ID = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID ?? '';
 const SLOT_ID = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID ?? '';
 
-export const AD_HEIGHT = 60;
+export const AD_HEIGHT = 50;
 
 export default function AdBanner() {
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function AdBanner() {
     <div style={style}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block', width: '100%', height: AD_HEIGHT }}
+        style={{ display: 'block', width: '100%', height: AD_HEIGHT, maxHeight: AD_HEIGHT }}
         data-ad-client={PUB_ID}
         data-ad-slot={SLOT_ID}
         data-ad-format="horizontal"
