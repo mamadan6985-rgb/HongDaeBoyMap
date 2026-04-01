@@ -150,7 +150,7 @@ export default function HongdaeMap() {
         onClick={handleMapClick}
         cursor={pendingLocation ? 'default' : 'crosshair'}
       >
-        <NavigationControl position="top-right" />
+        <NavigationControl position="bottom-right" />
 
         {spots.map((spot) => (
           <Marker key={spot.id} longitude={spot.lng} latitude={spot.lat} anchor="center">
