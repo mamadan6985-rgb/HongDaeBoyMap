@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         )}
       </head>
-      <body style={{ display: 'flex', flexDirection: 'column', height: '100dvh' }}>
+      <body>
         {children}
       </body>
     </html>

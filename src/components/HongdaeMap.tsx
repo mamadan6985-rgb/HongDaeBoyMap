@@ -138,7 +138,7 @@ export default function HongdaeMap() {
   const countColor = isDark ? '#44403c' : '#d6d3d1';
 
   return (
-    <div style={{ width: '100%', flex: 1, position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Map
         key={isDark ? 'dark' : 'light'}
         mapboxAccessToken={MAPBOX_TOKEN}

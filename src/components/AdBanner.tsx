@@ -1,15 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 const PUB_ID = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID ?? '';
 const SLOT_ID = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID ?? '';
 
-const BANNER_H = 60;
+export const AD_HEIGHT = 60;
 
 export default function AdBanner() {
-  const ref = useRef<HTMLModElement>(null);
-
   useEffect(() => {
     if (!PUB_ID || !SLOT_ID) return;
     try {
@@ -18,45 +16,30 @@ export default function AdBanner() {
     } catch {}
   }, []);
 
+  const style: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: AD_HEIGHT,
+    zIndex: 100,
+    overflow: 'hidden',
+    background: '#fff',
+  };
+
   if (!PUB_ID || !SLOT_ID) {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: BANNER_H,
-          flexShrink: 0,
-          background: 'rgba(0,0,0,0.04)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <div style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.04)' }}>
         <span style={{ fontSize: 10, color: '#ccc', fontFamily: 'monospace' }}>AD</span>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: BANNER_H,
-        maxHeight: BANNER_H,
-        flexShrink: 0,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
+    <div style={style}>
       <ins
-        ref={ref}
         className="adsbygoogle"
-        style={{
-          display: 'block',
-          width: '100%',
-          height: BANNER_H,
-          maxHeight: BANNER_H,
-          overflow: 'hidden',
-        }}
+        style={{ display: 'block', width: '100%', height: AD_HEIGHT }}
         data-ad-client={PUB_ID}
         data-ad-slot={SLOT_ID}
         data-ad-format="horizontal"
