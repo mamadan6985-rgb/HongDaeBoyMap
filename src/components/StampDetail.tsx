@@ -23,12 +23,12 @@ function timeAgo(dateStr: string): string {
 export default function StampDetail({ spot, isOwner, isDark = false, onDelete, onClose }: Props) {
   const config = TYPE_CONFIG[spot.type as SpotType];
 
-  const panelBg = isDark ? '#1c1917' : '#ffffff';
-  const titleColor = isDark ? '#f5f5f4' : '#1c1917';
-  const subtitleColor = isDark ? '#78716c' : '#a8a29e';
-  const bodyColor = isDark ? '#a8a29e' : '#57534e';
-  const handleColor = isDark ? '#44403c' : '#e5e7eb';
-  const dividerColor = isDark ? '#292524' : '#f5f5f4';
+  const panelBg = '#ffffff';
+  const titleColor = '#1c1917';
+  const subtitleColor = '#a8a29e';
+  const bodyColor = '#57534e';
+  const handleColor = '#e5e7eb';
+  const dividerColor = '#f5f5f4';
 
   return (
     <div

@@ -8,12 +8,12 @@ interface Props {
   isDark?: boolean;
 }
 
-export default function TypeSelector({ onSelect, onCancel, isDark = false }: Props) {
-  const panelBg = isDark ? '#1c1917' : '#ffffff';
-  const titleColor = isDark ? '#f5f5f4' : '#1c1917';
-  const subtitleColor = isDark ? '#78716c' : '#a8a29e';
-  const labelColor = isDark ? '#e7e5e4' : '#1c1917';
-  const handleColor = isDark ? '#44403c' : '#e5e7eb';
+export default function TypeSelector({ onSelect, onCancel }: Props) {
+  const panelBg = '#ffffff';
+  const titleColor = '#1c1917';
+  const subtitleColor = '#a8a29e';
+  const labelColor = '#1c1917';
+  const handleColor = '#e5e7eb';
   return (
     <div
       style={{
