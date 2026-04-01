@@ -78,10 +78,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Too many spots — slow down!' }, { status: 429 });
   }
 
+  const delete_token = crypto.randomUUID();
+
   const { data, error } = await supabase
     .from('spots')
-    .insert({ lat, lng, type, ip_hash })
-    .select('id, lat, lng, type, created_at')
+    .insert({ lat, lng, type, ip_hash, delete_token })
+    .select('id, lat, lng, type, created_at, delete_token')
     .single();
 
   if (error) {

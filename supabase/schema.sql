@@ -8,7 +8,8 @@ CREATE TABLE spots (
   lng          DOUBLE PRECISION NOT NULL,
   type         TEXT NOT NULL CHECK (type IN ('open_minded', 'language_exchange', 'kdrama', 'studied_abroad')),
   ip_hash      TEXT,
-  is_flagged   BOOLEAN NOT NULL DEFAULT false
+  is_flagged   BOOLEAN NOT NULL DEFAULT false,
+  delete_token TEXT
 );
 
 -- 최신순 조회 인덱스

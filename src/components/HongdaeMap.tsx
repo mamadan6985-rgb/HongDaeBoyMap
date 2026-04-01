@@ -5,6 +5,7 @@ import Map, { Marker, NavigationControl, type MapMouseEvent } from 'react-map-gl
 import 'mapbox-gl/dist/mapbox-gl.css';
 import TypeSelector from './TypeSelector';
 import StampMarker from './StampMarker';
+import StampDetail from './StampDetail';
 import { Spot, SpotType, TYPE_CONFIG } from '@/types';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -15,12 +16,37 @@ const INITIAL_VIEW = {
   zoom: 15,
 };
 
+const TOKENS_KEY = 'hbm_tokens';
+
+function loadDeleteTokens(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(TOKENS_KEY) ?? '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveDeleteToken(spotId: string, token: string) {
+  const tokens = loadDeleteTokens();
+  tokens[spotId] = token;
+  localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+}
+
+function removeDeleteToken(spotId: string) {
+  const tokens = loadDeleteTokens();
+  delete tokens[spotId];
+  localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+}
+
 export default function HongdaeMap() {
   const [spots, setSpots] = useState<Spot[]>([]);
   const [pendingLocation, setPendingLocation] = useState<{ lng: number; lat: number } | null>(null);
+  const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+  const [deleteTokens, setDeleteTokens] = useState<Record<string, string>>({});
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
+    setDeleteTokens(loadDeleteTokens());
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     setIsDark(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
@@ -36,7 +62,13 @@ export default function HongdaeMap() {
   }, []);
 
   const handleMapClick = useCallback((e: MapMouseEvent) => {
+    setSelectedSpot(null);
     setPendingLocation({ lng: e.lngLat.lng, lat: e.lngLat.lat });
+  }, []);
+
+  const handleStampClick = useCallback((spot: Spot) => {
+    setPendingLocation(null);
+    setSelectedSpot(spot);
   }, []);
 
   const handleTypeSelect = useCallback(
@@ -61,7 +93,11 @@ export default function HongdaeMap() {
           body: JSON.stringify({ lat: pendingLocation.lat, lng: pendingLocation.lng, type }),
         });
         if (res.ok) {
-          const saved: Spot = await res.json();
+          const saved: Spot & { delete_token?: string } = await res.json();
+          if (saved.delete_token) {
+            saveDeleteToken(saved.id, saved.delete_token);
+            setDeleteTokens((prev) => ({ ...prev, [saved.id]: saved.delete_token! }));
+          }
           setSpots((prev) => prev.map((s) => (s.id === newSpot.id ? saved : s)));
         }
       } catch {
@@ -70,6 +106,30 @@ export default function HongdaeMap() {
     },
     [pendingLocation]
   );
+
+  const handleDelete = useCallback(async () => {
+    if (!selectedSpot) return;
+    const token = deleteTokens[selectedSpot.id];
+
+    setSpots((prev) => prev.filter((s) => s.id !== selectedSpot.id));
+    setSelectedSpot(null);
+    removeDeleteToken(selectedSpot.id);
+    setDeleteTokens((prev) => {
+      const next = { ...prev };
+      delete next[selectedSpot.id];
+      return next;
+    });
+
+    try {
+      await fetch(`/api/spots/${selectedSpot.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+    } catch {
+      // Already removed from local state
+    }
+  }, [selectedSpot, deleteTokens]);
 
   const overlayBg = isDark ? 'rgba(28,25,23,0.92)' : 'rgba(255,255,255,0.92)';
   const titleColor = isDark ? '#f5f5f4' : '#1c1917';
@@ -93,7 +153,10 @@ export default function HongdaeMap() {
 
         {spots.map((spot) => (
           <Marker key={spot.id} longitude={spot.lng} latitude={spot.lat} anchor="center">
-            <div onClick={(e) => e.stopPropagation()}>
+            <div
+              onClick={(e) => { e.stopPropagation(); handleStampClick(spot); }}
+              style={{ cursor: 'pointer' }}
+            >
               <StampMarker type={spot.type} id={spot.id} />
             </div>
           </Marker>
@@ -103,37 +166,25 @@ export default function HongdaeMap() {
       {/* Title overlay */}
       <div
         style={{
-          position: 'absolute',
-          top: 16,
-          left: 16,
-          background: overlayBg,
-          backdropFilter: 'blur(8px)',
-          borderRadius: 14,
-          padding: '10px 16px',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
-          pointerEvents: 'none',
+          position: 'absolute', top: 16, left: 16,
+          background: overlayBg, backdropFilter: 'blur(8px)',
+          borderRadius: 14, padding: '10px 16px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.15)', pointerEvents: 'none',
         }}
       >
         <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: titleColor, fontFamily: 'monospace' }}>
           Hongdae Boy Map
         </p>
-        <p style={{ margin: '2px 0 0', fontSize: 11, color: subtitleColor }}>
-          tap anywhere to spot
-        </p>
+        <p style={{ margin: '2px 0 0', fontSize: 11, color: subtitleColor }}>tap anywhere to spot</p>
       </div>
 
       {/* Legend */}
       <div
         style={{
-          position: 'absolute',
-          bottom: 24,
-          left: 16,
-          background: overlayBg,
-          backdropFilter: 'blur(8px)',
-          borderRadius: 14,
-          padding: '10px 14px',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
-          pointerEvents: 'none',
+          position: 'absolute', bottom: 24, left: 16,
+          background: overlayBg, backdropFilter: 'blur(8px)',
+          borderRadius: 14, padding: '10px 14px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.15)', pointerEvents: 'none',
         }}
       >
         {(Object.entries(TYPE_CONFIG) as [SpotType, (typeof TYPE_CONFIG)[SpotType]][]).map(([type, config]) => (
@@ -146,7 +197,21 @@ export default function HongdaeMap() {
       </div>
 
       {pendingLocation && (
-        <TypeSelector isDark={isDark} onSelect={handleTypeSelect} onCancel={() => setPendingLocation(null)} />
+        <TypeSelector
+          isDark={isDark}
+          onSelect={handleTypeSelect}
+          onCancel={() => setPendingLocation(null)}
+        />
+      )}
+
+      {selectedSpot && (
+        <StampDetail
+          spot={selectedSpot}
+          isOwner={!!deleteTokens[selectedSpot.id]}
+          isDark={isDark}
+          onDelete={handleDelete}
+          onClose={() => setSelectedSpot(null)}
+        />
       )}
     </div>
   );
