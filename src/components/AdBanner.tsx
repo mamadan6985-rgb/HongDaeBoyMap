@@ -5,6 +5,8 @@ import { useEffect, useRef } from 'react';
 const PUB_ID = process.env.NEXT_PUBLIC_ADSENSE_PUB_ID ?? '';
 const SLOT_ID = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID ?? '';
 
+const BANNER_H = 60;
+
 export default function AdBanner() {
   const ref = useRef<HTMLModElement>(null);
 
@@ -16,18 +18,17 @@ export default function AdBanner() {
     } catch {}
   }, []);
 
-  // Show placeholder when env vars are not set
   if (!PUB_ID || !SLOT_ID) {
     return (
       <div
         style={{
           width: '100%',
-          height: 60,
+          height: BANNER_H,
+          flexShrink: 0,
           background: 'rgba(0,0,0,0.04)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          flexShrink: 0,
         }}
       >
         <span style={{ fontSize: 10, color: '#ccc', fontFamily: 'monospace' }}>AD</span>
@@ -36,15 +37,29 @@ export default function AdBanner() {
   }
 
   return (
-    <div style={{ width: '100%', height: 60, flexShrink: 0, overflow: 'hidden' }}>
+    <div
+      style={{
+        width: '100%',
+        height: BANNER_H,
+        maxHeight: BANNER_H,
+        flexShrink: 0,
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
       <ins
         ref={ref}
         className="adsbygoogle"
-        style={{ display: 'block', width: '100%', height: '60px' }}
+        style={{
+          display: 'block',
+          width: '100%',
+          height: BANNER_H,
+          maxHeight: BANNER_H,
+          overflow: 'hidden',
+        }}
         data-ad-client={PUB_ID}
         data-ad-slot={SLOT_ID}
         data-ad-format="horizontal"
-        data-full-width-responsive="true"
       />
     </div>
   );

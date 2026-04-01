@@ -140,6 +140,7 @@ export default function HongdaeMap() {
   return (
     <div style={{ width: '100%', flex: 1, position: 'relative' }}>
       <Map
+        key={isDark ? 'dark' : 'light'}
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={INITIAL_VIEW}
         style={{ width: '100%', height: '100%' }}
