@@ -249,11 +249,10 @@ export default function IntroPopup() {
   const touchStartX = useRef(0);
 
   useEffect(() => {
-    if (!localStorage.getItem(INTRO_KEY)) setVisible(true);
+    setVisible(true);
   }, []);
 
   const close = useCallback(() => {
-    localStorage.setItem(INTRO_KEY, '1');
     setVisible(false);
   }, []);
 
