@@ -234,11 +234,11 @@ function StudiedAbroadSVG() {
   );
 }
 
-const CHARACTERS = {
-  open_minded: OpenMindedSVG,
-  language_exchange: LanguageExchangeSVG,
-  kdrama: KDramaSVG,
-  studied_abroad: StudiedAbroadSVG,
+const CHARACTER_IMAGES: Record<SpotType, string> = {
+  open_minded: '/images/type-open-minded.jpeg',
+  language_exchange: '/images/type-language-exchange.jpeg',
+  kdrama: '/images/type-kdrama.jpeg',
+  studied_abroad: '/images/type-studied-abroad.jpeg',
 };
 
 /* ── 팝업 컴포넌트 ────────────────────────────────────── */
@@ -271,7 +271,6 @@ export default function IntroPopup() {
 
   const type = TYPES[index];
   const config = TYPE_CONFIG[type];
-  const CharSVG = CHARACTERS[type];
   const isLast = index === TYPES.length - 1;
 
   return (
@@ -291,9 +290,13 @@ export default function IntroPopup() {
           </button>
         </div>
 
-        {/* 캐릭터 일러스트 */}
-        <div style={{ height: 210, padding: '0 24px', background: `linear-gradient(180deg, ${config.color}12 0%, ${config.color}06 100%)`, position: 'relative' }}>
-          <CharSVG />
+        {/* 캐릭터 이미지 */}
+        <div style={{ height: 210, background: `linear-gradient(180deg, ${config.color}12 0%, ${config.color}06 100%)`, position: 'relative', overflow: 'hidden' }}>
+          <img
+            src={CHARACTER_IMAGES[type]}
+            alt={config.label}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+          />
           {/* 이전/다음 화살표 */}
           {index > 0 && (
             <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'white', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
