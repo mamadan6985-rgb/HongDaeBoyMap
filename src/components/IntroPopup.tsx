@@ -299,7 +299,7 @@ export default function IntroPopup() {
               </button>
               {/* 중앙 텍스트 */}
               <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px', textAlign: 'center' }}>
-                <p style={{ margin: '0 0 10px', fontSize: 22, fontWeight: 900, color: 'white', fontFamily: 'monospace', letterSpacing: '0.04em', lineHeight: 1.3 }}>
+                <p style={{ margin: '0 0 10px', fontSize: 18, color: 'white', fontFamily: "'Rock Salt', cursive", lineHeight: 1.4 }}>
                   🇰🇷 HONGDAE BOY MAP 📍
                 </p>
                 <p style={{ margin: '0 0 20px', fontSize: 14, color: 'rgba(255,255,255,0.92)', fontWeight: 600, lineHeight: 1.6 }}>

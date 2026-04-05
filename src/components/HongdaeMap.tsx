@@ -191,7 +191,7 @@ export default function HongdaeMap() {
           boxShadow: 'rgba(0,0,0,0.15) 0px 2px 12px', pointerEvents: 'none',
         }}
       >
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: titleColor, fontFamily: 'monospace' }}>
+        <p style={{ margin: 0, fontSize: 13, color: titleColor, fontFamily: "'Rock Salt', cursive" }}>
           Hongdae Boy Map
         </p>
         <p style={{ margin: '2px 0 0', fontSize: 11, color: subtitleColor }}>tap anywhere to spot</p>
