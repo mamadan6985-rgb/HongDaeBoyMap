@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import AdBanner, { AD_HEIGHT } from '@/components/AdBanner';
+import IntroPopup from '@/components/IntroPopup';
 
 const HongdaeMap = dynamic(() => import('@/components/HongdaeMap'), {
   ssr: false,
@@ -15,8 +16,8 @@ const HongdaeMap = dynamic(() => import('@/components/HongdaeMap'), {
 export default function Home() {
   return (
     <>
+      <IntroPopup />
       <AdBanner />
-      {/* 지도를 fixed 배너 아래로 밀어냄 */}
       <div style={{ paddingTop: AD_HEIGHT, height: '100dvh', boxSizing: 'border-box' }}>
         <HongdaeMap />
       </div>
