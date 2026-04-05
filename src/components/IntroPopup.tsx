@@ -243,21 +243,22 @@ const CHARACTER_IMAGES: Record<SpotType, string> = {
 
 /* ── 팝업 컴포넌트 ────────────────────────────────────── */
 
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
+const MAP_BG = `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/126.9227,37.5563,14.5,0/720x600@2x?access_token=${MAPBOX_TOKEN}`;
+
+// page 0 = intro, page 1~4 = types
+const TOTAL_PAGES = TYPES.length + 1;
+
 export default function IntroPopup() {
   const [visible, setVisible] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [page, setPage] = useState(0);
   const touchStartX = useRef(0);
 
-  useEffect(() => {
-    setVisible(true);
-  }, []);
+  useEffect(() => { setVisible(true); }, []);
 
-  const close = useCallback(() => {
-    setVisible(false);
-  }, []);
-
-  const next = useCallback(() => setIndex((i) => Math.min(i + 1, TYPES.length - 1)), []);
-  const prev = useCallback(() => setIndex((i) => Math.max(i - 1, 0)), []);
+  const close = useCallback(() => setVisible(false), []);
+  const next = useCallback(() => setPage((p) => Math.min(p + 1, TOTAL_PAGES - 1)), []);
+  const prev = useCallback(() => setPage((p) => Math.max(p - 1, 0)), []);
 
   const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e: React.TouchEvent) => {
@@ -268,9 +269,11 @@ export default function IntroPopup() {
 
   if (!visible) return null;
 
-  const type = TYPES[index];
+  const isIntro = page === 0;
+  const typeIndex = Math.max(0, page - 1);
+  const type = TYPES[typeIndex];
   const config = TYPE_CONFIG[type];
-  const isLast = index === TYPES.length - 1;
+  const isLast = page === TOTAL_PAGES - 1;
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>
@@ -279,90 +282,112 @@ export default function IntroPopup() {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* 헤더 */}
-        <div style={{ padding: '18px 20px 12px', position: 'relative', textAlign: 'center' }}>
-          <button onClick={close} style={{ position: 'absolute', right: 16, top: 16, background: 'none', border: 'none', fontSize: 12, color: '#d4d0cb', cursor: 'pointer', padding: '4px 8px', letterSpacing: '0.03em' }}>
-            Skip
-          </button>
-          <p style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 900, color: '#1c1917', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
-            🇰🇷 HONGDAE BOY MAP 📍
-          </p>
-          <p style={{ margin: 0, fontSize: 12, color: '#57534e', letterSpacing: '0.01em', fontWeight: 600 }}>
-            Spotted a Hongdae Boy? Tap the map, drop a pin.
-          </p>
-        </div>
 
-        {/* 캐릭터 이미지 + 인용 오버레이 */}
-        <div style={{ height: 200, background: `${config.color}10`, position: 'relative', overflow: 'hidden' }}>
-          <img
-            src={CHARACTER_IMAGES[type]}
-            alt={config.label}
-            style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
-          />
+        {isIntro ? (
+          /* ── 인트로 슬라이드 ── */
+          <>
+            <div style={{
+              height: 300, position: 'relative', overflow: 'hidden',
+              backgroundImage: `url(${MAP_BG})`,
+              backgroundSize: 'cover', backgroundPosition: 'center',
+            }}>
+              {/* 어두운 오버레이 */}
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.52)' }} />
+              {/* Skip */}
+              <button onClick={close} style={{ position: 'absolute', right: 14, top: 14, background: 'rgba(255,255,255,0.18)', border: 'none', borderRadius: 8, fontSize: 12, color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: '4px 10px', zIndex: 2 }}>
+                Skip
+              </button>
+              {/* 중앙 텍스트 */}
+              <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px', textAlign: 'center' }}>
+                <p style={{ margin: '0 0 10px', fontSize: 22, fontWeight: 900, color: 'white', fontFamily: 'monospace', letterSpacing: '0.04em', lineHeight: 1.3 }}>
+                  🇰🇷 HONGDAE BOY MAP 📍
+                </p>
+                <p style={{ margin: '0 0 20px', fontSize: 14, color: 'rgba(255,255,255,0.92)', fontWeight: 600, lineHeight: 1.6 }}>
+                  Spotted a Hongdae Boy?<br />Tap the map, drop a pin.
+                </p>
+                <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>
+                  SWIPE TO MEET THE TYPES →
+                </p>
+              </div>
+            </div>
 
-          {/* 하단 그라데이션 + 명언 오버레이 */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            background: 'linear-gradient(transparent, rgba(0,0,0,0.72))',
-            padding: '28px 14px 10px',
-            pointerEvents: 'none',
-          }}>
-            <p style={{ margin: 0, fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: 'white', lineHeight: 1.45, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
-              {config.quote}
-            </p>
-          </div>
-
-          {/* 이전/다음 화살표 */}
-          {index > 0 && (
-            <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              ←
-            </button>
-          )}
-          {!isLast && (
-            <button onClick={next} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              →
-            </button>
-          )}
-        </div>
-
-        {/* 타입 정보 */}
-        <div style={{ padding: '14px 20px 18px' }}>
-          {/* 타입 이름 — 크고 굵게, 색상 강조 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
-            <p style={{ margin: 0, fontSize: 18, fontWeight: 900, color: config.color, letterSpacing: '-0.01em' }}>{config.label}</p>
-          </div>
-          {/* 패션 */}
-          <p style={{ margin: '0 0 12px', fontSize: 12, color: '#78716c', lineHeight: 1.6 }}>{config.fashion}</p>
-
-          {/* 인디케이터 도트 */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
-            {TYPES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIndex(i)}
-                style={{ width: i === index ? 18 : 6, height: 6, borderRadius: 9999, background: i === index ? config.color : '#e5e7eb', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }}
+            <div style={{ padding: '14px 20px 18px' }}>
+              {/* 도트 — 인트로 포함 */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+                {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
+                  <button key={i} onClick={() => setPage(i)}
+                    style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? '#1c1917' : '#e5e7eb', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }}
+                  />
+                ))}
+              </div>
+              <button onClick={next} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#1c1917', color: 'white', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer' }}>
+                Meet the types →
+              </button>
+            </div>
+          </>
+        ) : (
+          /* ── 캐릭터 슬라이드 ── */
+          <>
+            {/* 캐릭터 이미지 + 인용 오버레이 */}
+            <div style={{ height: 200, background: `${config.color}10`, position: 'relative', overflow: 'hidden' }}>
+              <img
+                src={CHARACTER_IMAGES[type]}
+                alt={config.label}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
               />
-            ))}
-          </div>
+              {/* Skip */}
+              <button onClick={close} style={{ position: 'absolute', right: 10, top: 10, background: 'rgba(0,0,0,0.28)', border: 'none', borderRadius: 8, fontSize: 12, color: 'rgba(255,255,255,0.75)', cursor: 'pointer', padding: '4px 10px', zIndex: 2 }}>
+                Skip
+              </button>
+              {/* 하단 그라데이션 + 명언 */}
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.72))', padding: '28px 14px 10px', pointerEvents: 'none' }}>
+                <p style={{ margin: 0, fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: 'white', lineHeight: 1.45, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
+                  {config.quote}
+                </p>
+              </div>
+              {/* 화살표 */}
+              {page > 1 && (
+                <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  ←
+                </button>
+              )}
+              {!isLast && (
+                <button onClick={next} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  →
+                </button>
+              )}
+            </div>
 
-          {/* 버튼 */}
-          {isLast ? (
-            <button
-              onClick={close}
-              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: config.color, color: 'white', fontWeight: 800, fontSize: 14, border: 'none', cursor: 'pointer', letterSpacing: '0.02em' }}
-            >
-              Let&apos;s spot! 📍
-            </button>
-          ) : (
-            <button
-              onClick={next}
-              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#f5f5f4', color: '#57534e', fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}
-            >
-              Next →
-            </button>
-          )}
-        </div>
+            {/* 타입 정보 */}
+            <div style={{ padding: '14px 20px 18px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
+                <p style={{ margin: 0, fontSize: 18, fontWeight: 900, color: config.color, letterSpacing: '-0.01em' }}>{config.label}</p>
+              </div>
+              <p style={{ margin: '0 0 12px', fontSize: 12, color: '#78716c', lineHeight: 1.6 }}>{config.fashion}</p>
+
+              {/* 도트 */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+                {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
+                  <button key={i} onClick={() => setPage(i)}
+                    style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? config.color : '#e5e7eb', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }}
+                  />
+                ))}
+              </div>
+
+              {isLast ? (
+                <button onClick={close} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: config.color, color: 'white', fontWeight: 800, fontSize: 14, border: 'none', cursor: 'pointer', letterSpacing: '0.02em' }}>
+                  Let&apos;s spot! 📍
+                </button>
+              ) : (
+                <button onClick={next} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#f5f5f4', color: '#57534e', fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}>
+                  Next →
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
       </div>
     </div>
   );
