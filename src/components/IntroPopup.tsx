@@ -281,13 +281,16 @@ export default function IntroPopup() {
         onTouchEnd={onTouchEnd}
       >
         {/* 헤더 */}
-        <div style={{ padding: '18px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: '#a8a29e', fontFamily: 'monospace', letterSpacing: '0.08em' }}>
-            HONGDAE BOY MAP
-          </p>
-          <button onClick={close} style={{ background: 'none', border: 'none', fontSize: 13, color: '#c4c0bb', cursor: 'pointer', padding: '4px 8px' }}>
+        <div style={{ padding: '20px 20px 0', position: 'relative', textAlign: 'center' }}>
+          <button onClick={close} style={{ position: 'absolute', right: 16, top: 16, background: 'none', border: 'none', fontSize: 13, color: '#c4c0bb', cursor: 'pointer', padding: '4px 8px' }}>
             Skip
           </button>
+          <p style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 900, color: '#1c1917', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+            🇰🇷 HONGDAE BOY MAP 📍
+          </p>
+          <p style={{ margin: '0 0 14px', fontSize: 13, fontWeight: 600, color: '#78716c' }}>
+            Who did you run into, and where?
+          </p>
         </div>
 
         {/* 캐릭터 이미지 */}
