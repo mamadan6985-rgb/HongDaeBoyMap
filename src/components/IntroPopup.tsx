@@ -306,7 +306,7 @@ export default function IntroPopup() {
                   Spotted a Hongdae Boy?<br />Tap the map, drop a pin.
                 </p>
                 <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>
-                  SWIPE TO MEET THE TYPES →
+                  SWIPE TO SEE THE TYPES →
                 </p>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function IntroPopup() {
                 ))}
               </div>
               <button onClick={next} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#1c1917', color: 'white', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer' }}>
-                Meet the types →
+                Which one was it? →
               </button>
             </div>
           </>
