@@ -486,11 +486,13 @@ export default function IntroPopup() {
                 padding: '32px 16px 14px',
               }}>
                 <p style={{
-                  margin: 0, fontSize: 14,
+                  margin: 0, fontSize: 15,
                   fontStyle: 'italic', fontWeight: 700,
                   color: 'white',
                   lineHeight: 1.4,
-                  textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+                  textAlign: 'center',
+                  textShadow: '0 0 12px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9)',
+                  WebkitTextStroke: '0.4px rgba(0,0,0,0.6)',
                 }}>
                   {config.quote}
                 </p>
