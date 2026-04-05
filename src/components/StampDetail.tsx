@@ -20,15 +20,8 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-export default function StampDetail({ spot, isOwner, isDark = false, onDelete, onClose }: Props) {
+export default function StampDetail({ spot, isOwner, onDelete, onClose }: Props) {
   const config = TYPE_CONFIG[spot.type as SpotType];
-
-  const panelBg = '#ffffff';
-  const titleColor = '#1c1917';
-  const subtitleColor = '#a8a29e';
-  const bodyColor = '#57534e';
-  const handleColor = '#e5e7eb';
-  const dividerColor = '#f5f5f4';
 
   return (
     <div
@@ -43,67 +36,114 @@ export default function StampDetail({ spot, isOwner, isDark = false, onDelete, o
     >
       {/* Backdrop */}
       <div
+        className="fade-in-bg"
         onClick={onClose}
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(2px)',
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)',
         }}
       />
 
       {/* Panel */}
       <div
+        className="slide-up"
         style={{
           position: 'relative',
-          background: panelBg,
-          borderRadius: '20px 20px 0 0',
+          background: '#0F0F0F',
+          borderRadius: '24px 24px 0 0',
           width: '100%',
-          maxWidth: '420px',
-          padding: '20px 20px 32px',
-          boxShadow: '0 -4px 40px rgba(0,0,0,0.15)',
+          maxWidth: '440px',
+          padding: '20px 20px 36px',
+          boxShadow: '0 -8px 60px rgba(0,0,0,0.6)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: 'none',
+          overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Handle */}
-        <div style={{ width: 40, height: 4, background: handleColor, borderRadius: 9999, margin: '0 auto 18px' }} />
+        {/* Color accent bar at top */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: `linear-gradient(90deg, ${config.color}, ${config.color}00)`,
+          }}
+        />
 
-        {/* Type badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
-          <span style={{ fontSize: 16, fontWeight: 700, color: config.color }}>{config.label}</span>
-          <span style={{ marginLeft: 'auto', fontSize: 11, color: subtitleColor }}>{timeAgo(spot.created_at)}</span>
+        {/* Handle */}
+        <div style={{ width: 36, height: 3, background: 'rgba(255,255,255,0.15)', borderRadius: 9999, margin: '4px auto 18px' }} />
+
+        {/* Type badge + time */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          <span
+            style={{
+              padding: '4px 12px',
+              borderRadius: 9999,
+              background: `${config.color}22`,
+              border: `1px solid ${config.color}50`,
+              fontSize: 12,
+              fontWeight: 400,
+              fontFamily: "'Bebas Neue', cursive",
+              color: config.color,
+              letterSpacing: '0.08em',
+            }}
+          >
+            {config.label}
+          </span>
+          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(240,235,227,0.3)', fontFamily: "'Courier New', monospace" }}>
+            {timeAgo(spot.created_at)}
+          </span>
         </div>
 
-        <div style={{ borderTop: `1px solid ${dividerColor}`, paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {/* Fashion */}
-          <div>
-            <p style={{ margin: '0 0 3px', fontSize: 11, color: subtitleColor, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Outfit</p>
-            <p style={{ margin: 0, fontSize: 13, color: bodyColor }}>{config.fashion}</p>
-          </div>
+        {/* Quote — hero element */}
+        <p
+          style={{
+            margin: '0 0 16px',
+            fontSize: 22,
+            fontStyle: 'italic',
+            fontWeight: 700,
+            color: '#F0EBE3',
+            lineHeight: 1.35,
+            borderLeft: `3px solid ${config.color}`,
+            paddingLeft: 14,
+          }}
+        >
+          {config.quote}
+        </p>
 
-          {/* Quote */}
-          <div>
-            <p style={{ margin: '0 0 3px', fontSize: 11, color: subtitleColor, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Opening line</p>
-            <p style={{ margin: 0, fontSize: 14, color: titleColor, fontStyle: 'italic' }}>{config.quote}</p>
-          </div>
+        {/* Divider */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 14 }}>
+          {/* Outfit */}
+          <p style={{ margin: '0 0 3px', fontSize: 10, color: 'rgba(240,235,227,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'Courier New', monospace" }}>
+            Outfit
+          </p>
+          <p style={{ margin: 0, fontSize: 13, color: 'rgba(240,235,227,0.65)', lineHeight: 1.6 }}>
+            {config.fashion}
+          </p>
         </div>
 
         {/* Actions */}
-        <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {isOwner && (
             <button
               onClick={onDelete}
               style={{
                 width: '100%',
-                padding: '11px 0',
+                padding: '12px 0',
                 borderRadius: 12,
-                border: '1.5px solid #FCA5A5',
-                background: '#FEF2F2',
-                color: '#EF4444',
+                border: '1.5px solid rgba(255,59,92,0.4)',
+                background: 'rgba(255,59,92,0.08)',
+                color: '#FF3B5C',
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: 'pointer',
+                fontFamily: "'Courier New', monospace",
+                letterSpacing: '0.03em',
               }}
             >
               Remove my stamp
@@ -114,14 +154,17 @@ export default function StampDetail({ spot, isOwner, isDark = false, onDelete, o
             style={{
               width: '100%',
               padding: '10px 0',
-              background: 'none',
-              border: 'none',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 12,
               fontSize: 13,
-              color: subtitleColor,
+              color: 'rgba(240,235,227,0.3)',
               cursor: 'pointer',
+              fontFamily: "'Courier New', monospace",
+              letterSpacing: '0.05em',
             }}
           >
-            Close
+            close
           </button>
         </div>
       </div>

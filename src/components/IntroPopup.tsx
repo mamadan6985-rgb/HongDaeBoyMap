@@ -234,6 +234,13 @@ function StudiedAbroadSVG() {
   );
 }
 
+const CHARACTER_SVGS: Record<SpotType, React.FC> = {
+  open_minded: OpenMindedSVG,
+  language_exchange: LanguageExchangeSVG,
+  kdrama: KDramaSVG,
+  studied_abroad: StudiedAbroadSVG,
+};
+
 const CHARACTER_IMAGES: Record<SpotType, string> = {
   open_minded: '/images/type-open-minded.jpeg',
   language_exchange: '/images/type-language-exchange.jpeg',
@@ -244,7 +251,7 @@ const CHARACTER_IMAGES: Record<SpotType, string> = {
 /* ── 팝업 컴포넌트 ────────────────────────────────────── */
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-const MAP_BG = `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/126.9227,37.5563,14.5,0/720x600@2x?access_token=${MAPBOX_TOKEN}`;
+const MAP_BG = `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/126.9227,37.5563,14.5,0/720x600@2x?access_token=${MAPBOX_TOKEN}`;
 
 // page 0 = intro, page 1~4 = types
 const TOTAL_PAGES = TYPES.length + 1;
@@ -274,120 +281,318 @@ export default function IntroPopup() {
   const type = TYPES[typeIndex];
   const config = TYPE_CONFIG[type];
   const isLast = page === TOTAL_PAGES - 1;
+  const CharSVG = CHARACTER_SVGS[type];
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>
+    <div
+      className="fade-in-bg"
+      style={{
+        position: 'fixed', inset: 0, zIndex: 300,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(6px)',
+      }}
+    >
       <div
-        style={{ width: '88%', maxWidth: 360, background: 'white', borderRadius: 24, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', userSelect: 'none' }}
+        className="pop-in"
+        style={{
+          width: '90%',
+          maxWidth: 370,
+          background: '#0F0F0F',
+          borderRadius: 24,
+          overflow: 'hidden',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          userSelect: 'none',
+        }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-
         {isIntro ? (
           /* ── 인트로 슬라이드 ── */
           <>
             <div style={{
-              height: 300, position: 'relative', overflow: 'hidden',
+              height: 280, position: 'relative', overflow: 'hidden',
               backgroundImage: `url(${MAP_BG})`,
               backgroundSize: 'cover', backgroundPosition: 'center',
             }}>
-              {/* 어두운 오버레이 */}
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.52)' }} />
+              {/* 다크 오버레이 */}
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)' }} />
               {/* Skip */}
-              <button onClick={close} style={{ position: 'absolute', right: 14, top: 14, background: 'rgba(255,255,255,0.18)', border: 'none', borderRadius: 8, fontSize: 12, color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: '4px 10px', zIndex: 2 }}>
-                Skip
+              <button onClick={close} style={{
+                position: 'absolute', right: 14, top: 14, zIndex: 2,
+                background: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: 8, fontSize: 11,
+                color: 'rgba(255,255,255,0.5)',
+                cursor: 'pointer', padding: '4px 12px',
+                fontFamily: "'Courier New', monospace",
+                letterSpacing: '0.06em',
+              }}>
+                skip
               </button>
               {/* 중앙 텍스트 */}
-              <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px', textAlign: 'center' }}>
-                <p style={{ margin: '0 0 10px', fontSize: 18, color: 'white', fontFamily: "'Rock Salt', cursive", lineHeight: 1.4 }}>
-                  🇰🇷 HONGDAE BOY MAP 📍
+              <div style={{
+                position: 'relative', zIndex: 1, height: '100%',
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                padding: '0 28px', textAlign: 'center',
+              }}>
+                {/* 배지 */}
+                <span style={{
+                  display: 'inline-block',
+                  padding: '4px 12px',
+                  borderRadius: 9999,
+                  background: 'rgba(255,229,0,0.15)',
+                  border: '1px solid rgba(255,229,0,0.3)',
+                  fontSize: 11,
+                  color: '#FFE500',
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: 16,
+                }}>
+                  🇰🇷 Seoul, Hongdae
+                </span>
+                <p style={{
+                  margin: '0 0 10px', fontSize: 32,
+                  color: 'white',
+                  fontFamily: "'Bebas Neue', cursive",
+                  letterSpacing: '0.08em',
+                  lineHeight: 1,
+                }}>
+                  📍 HONGDAE BOY MAP
                 </p>
-                <p style={{ margin: '0 0 20px', fontSize: 14, color: 'rgba(255,255,255,0.92)', fontWeight: 600, lineHeight: 1.6 }}>
+                <p style={{
+                  margin: '0 0 20px', fontSize: 14,
+                  color: 'rgba(255,255,255,0.75)',
+                  fontWeight: 500, lineHeight: 1.7,
+                }}>
                   Spotted a Hongdae Boy?<br />Tap the map, drop a pin.
                 </p>
-                <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>
+                <p style={{
+                  margin: 0, fontSize: 10,
+                  color: 'rgba(255,255,255,0.35)',
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                }}>
                   SWIPE TO SEE THE TYPES →
                 </p>
               </div>
             </div>
 
-            <div style={{ padding: '14px 20px 18px' }}>
-              {/* 도트 — 인트로 포함 */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+            <div style={{ padding: '16px 20px 22px' }}>
+              {/* 도트 */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 5, marginBottom: 14 }}>
                 {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
                   <button key={i} onClick={() => setPage(i)}
-                    style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? '#1c1917' : '#e5e7eb', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }}
+                    style={{
+                      width: i === page ? 20 : 6, height: 6,
+                      borderRadius: 9999,
+                      background: i === page ? '#FFE500' : 'rgba(255,255,255,0.15)',
+                      border: 'none', cursor: 'pointer', padding: 0,
+                      transition: 'all 0.25s',
+                    }}
                   />
                 ))}
               </div>
-              <button onClick={next} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#1c1917', color: 'white', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer' }}>
-                Which one was it? →
+              <button onClick={next} style={{
+                width: '100%', padding: '14px 0',
+                borderRadius: 14,
+                background: '#FFE500',
+                color: '#0F0F0F',
+                fontWeight: 800,
+                border: 'none', cursor: 'pointer',
+                fontFamily: "'Bebas Neue', cursive",
+                letterSpacing: '0.1em',
+                fontSize: 17,
+              }}>
+                WHICH ONE WAS IT? →
               </button>
             </div>
           </>
         ) : (
           /* ── 캐릭터 슬라이드 ── */
           <>
-            {/* 캐릭터 이미지 + 인용 오버레이 */}
-            <div style={{ height: 200, background: `${config.color}10`, position: 'relative', overflow: 'hidden' }}>
+            {/* 캐릭터 헤더 — 컬러 배경 */}
+            <div style={{
+              height: 220,
+              background: `linear-gradient(160deg, ${config.color}25 0%, #0F0F0F 100%)`,
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', alignItems: 'flex-end',
+              borderBottom: `1px solid ${config.color}20`,
+            }}>
+              {/* 배경 글자 워터마크 */}
+              <span style={{
+                position: 'absolute', top: -10, right: -8,
+                fontFamily: "'Bebas Neue', cursive",
+                fontSize: 100,
+                color: config.color,
+                opacity: 0.06,
+                letterSpacing: '-0.02em',
+                lineHeight: 1,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}>
+                HB
+              </span>
+
+              {/* 캐릭터 SVG — 기본 */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0, left: '50%',
+                transform: 'translateX(-50%)',
+                width: 140, height: 190,
+                opacity: 0.15,
+                filter: 'blur(0px)',
+              }}>
+                <CharSVG />
+              </div>
+
+              {/* 캐릭터 이미지 (JPG) */}
               <img
                 src={CHARACTER_IMAGES[type]}
                 alt={config.label}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
+                style={{
+                  position: 'absolute', bottom: 0, left: '50%',
+                  transform: 'translateX(-50%)',
+                  height: '95%',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  objectPosition: 'bottom',
+                }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
+
               {/* Skip */}
-              <button onClick={close} style={{ position: 'absolute', right: 10, top: 10, background: 'rgba(0,0,0,0.28)', border: 'none', borderRadius: 8, fontSize: 12, color: 'rgba(255,255,255,0.75)', cursor: 'pointer', padding: '4px 10px', zIndex: 2 }}>
-                Skip
+              <button onClick={close} style={{
+                position: 'absolute', right: 12, top: 12, zIndex: 2,
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: 8, fontSize: 11,
+                color: 'rgba(255,255,255,0.4)',
+                cursor: 'pointer', padding: '4px 10px',
+                fontFamily: "'Courier New', monospace",
+              }}>
+                skip
               </button>
-              {/* 하단 그라데이션 + 명언 */}
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.72))', padding: '28px 14px 10px', pointerEvents: 'none' }}>
-                <p style={{ margin: 0, fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: 'white', lineHeight: 1.45, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
+
+              {/* 인용구 오버레이 — 하단 */}
+              <div style={{
+                position: 'relative', zIndex: 2,
+                width: '100%',
+                background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
+                padding: '32px 16px 14px',
+              }}>
+                <p style={{
+                  margin: 0, fontSize: 14,
+                  fontStyle: 'italic', fontWeight: 700,
+                  color: 'white',
+                  lineHeight: 1.4,
+                  textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+                }}>
                   {config.quote}
                 </p>
               </div>
+
               {/* 화살표 */}
               {page > 1 && (
-                <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <button onClick={prev} style={{
+                  position: 'absolute', left: 8, top: '40%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(0,0,0,0.5)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '50%', width: 30, height: 30,
+                  fontSize: 13, cursor: 'pointer',
+                  color: 'rgba(255,255,255,0.7)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
                   ←
                 </button>
               )}
               {!isLast && (
-                <button onClick={next} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <button onClick={next} style={{
+                  position: 'absolute', right: 8, top: '40%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(0,0,0,0.5)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '50%', width: 30, height: 30,
+                  fontSize: 13, cursor: 'pointer',
+                  color: 'rgba(255,255,255,0.7)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
                   →
                 </button>
               )}
             </div>
 
             {/* 타입 정보 */}
-            <div style={{ padding: '14px 20px 18px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-                <span style={{ width: 10, height: 10, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
-                <p style={{ margin: 0, fontSize: 18, fontWeight: 900, color: config.color, letterSpacing: '-0.01em' }}>{config.label}</p>
-              </div>
-              <p style={{ margin: '0 0 12px', fontSize: 12, color: '#78716c', lineHeight: 1.6 }}>{config.fashion}</p>
+            <div style={{ padding: '16px 20px 22px' }}>
+              <p style={{
+                margin: '0 0 4px', fontSize: 28, fontWeight: 400,
+                fontFamily: "'Bebas Neue', cursive",
+                color: config.color, letterSpacing: '0.04em',
+                lineHeight: 1,
+              }}>
+                {config.label}
+              </p>
+              <p style={{
+                margin: '0 0 14px', fontSize: 12,
+                color: 'rgba(240,235,227,0.45)',
+                lineHeight: 1.6,
+                fontFamily: "'Courier New', monospace",
+              }}>
+                {config.fashion}
+              </p>
 
               {/* 도트 */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 5, marginBottom: 14 }}>
                 {Array.from({ length: TOTAL_PAGES }).map((_, i) => (
                   <button key={i} onClick={() => setPage(i)}
-                    style={{ width: i === page ? 18 : 6, height: 6, borderRadius: 9999, background: i === page ? config.color : '#e5e7eb', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.2s' }}
+                    style={{
+                      width: i === page ? 20 : 6, height: 6,
+                      borderRadius: 9999,
+                      background: i === page ? config.color : 'rgba(255,255,255,0.12)',
+                      border: 'none', cursor: 'pointer', padding: 0,
+                      transition: 'all 0.25s',
+                    }}
                   />
                 ))}
               </div>
 
               {isLast ? (
-                <button onClick={close} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: config.color, color: 'white', fontWeight: 800, fontSize: 14, border: 'none', cursor: 'pointer', letterSpacing: '0.02em' }}>
-                  Let&apos;s spot! 📍
+                <button onClick={close} style={{
+                  width: '100%', padding: '14px 0',
+                  borderRadius: 14,
+                  background: config.color,
+                  color: '#0F0F0F',
+                  fontWeight: 800,
+                  border: 'none', cursor: 'pointer',
+                  fontFamily: "'Bebas Neue', cursive",
+                  letterSpacing: '0.1em',
+                  fontSize: 18,
+                }}>
+                  LET&apos;S SPOT! 📍
                 </button>
               ) : (
-                <button onClick={next} style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#f5f5f4', color: '#57534e', fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}>
+                <button onClick={next} style={{
+                  width: '100%', padding: '12px 0',
+                  borderRadius: 14,
+                  background: `${config.color}18`,
+                  border: `1px solid ${config.color}30`,
+                  color: config.color,
+                  fontWeight: 700, fontSize: 14,
+                  cursor: 'pointer',
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: '0.04em',
+                }}>
                   Next →
                 </button>
               )}
             </div>
           </>
         )}
-
       </div>
     </div>
   );

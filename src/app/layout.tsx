@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Bebas+Neue&display=swap" rel="stylesheet" />
         {PUB_ID && (
           // eslint-disable-next-line @next/next/no-sync-scripts
           <script

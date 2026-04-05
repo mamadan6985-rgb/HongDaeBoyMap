@@ -19,67 +19,76 @@ export default function StampMarker({ type, id }: Props) {
   const rotation = getRotation(id);
 
   return (
-    <div
-      style={{ transform: `rotate(${rotation}deg)`, pointerEvents: 'none' }}
-    >
-      <svg
-        width="52"
-        height="52"
-        viewBox="0 0 52 52"
-        xmlns="http://www.w3.org/2000/svg"
+    <div style={{ transform: `rotate(${rotation}deg)`, pointerEvents: 'none' }}>
+      <div
+        className="stamp-drop"
+        style={{ filter: `drop-shadow(0 0 8px ${config.color}90)` }}
       >
-        {/* Outer dashed ring — classic rubber stamp look */}
-        <circle
-          cx="26"
-          cy="26"
-          r="24"
-          fill="none"
-          stroke={config.color}
-          strokeWidth="2.5"
-          strokeDasharray="4 2.5"
-          opacity="0.9"
-        />
-        {/* Inner tinted fill */}
-        <circle cx="26" cy="26" r="19" fill={config.color} opacity="0.1" />
-        {/* Inner ring */}
-        <circle
-          cx="26"
-          cy="26"
-          r="19"
-          fill="none"
-          stroke={config.color}
-          strokeWidth="1"
-          opacity="0.35"
-        />
-        {/* HONGDAE */}
-        <text
-          x="26"
-          y="23"
-          textAnchor="middle"
-          fontSize="6.5"
-          fontWeight="800"
-          fill={config.color}
-          fontFamily="'Courier New', Courier, monospace"
-          letterSpacing="1.2"
-          opacity="0.9"
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          HONGDAE
-        </text>
-        {/* BOY */}
-        <text
-          x="26"
-          y="32"
-          textAnchor="middle"
-          fontSize="6.5"
-          fontWeight="800"
-          fill={config.color}
-          fontFamily="'Courier New', Courier, monospace"
-          letterSpacing="1.2"
-          opacity="0.9"
-        >
-          BOY
-        </text>
-      </svg>
+          {/* Glow ring */}
+          <circle
+            cx="32"
+            cy="32"
+            r="30"
+            fill={config.color}
+            opacity="0.08"
+          />
+          {/* Outer dashed ring — rubber stamp */}
+          <circle
+            cx="32"
+            cy="32"
+            r="29"
+            fill="none"
+            stroke={config.color}
+            strokeWidth="3"
+            strokeDasharray="5.5 3"
+            opacity="1"
+          />
+          {/* Inner tinted fill */}
+          <circle cx="32" cy="32" r="23" fill={config.color} opacity="0.14" />
+          {/* Inner solid ring */}
+          <circle
+            cx="32"
+            cy="32"
+            r="23"
+            fill="none"
+            stroke={config.color}
+            strokeWidth="1.5"
+            opacity="0.6"
+          />
+          {/* HONGDAE */}
+          <text
+            x="32"
+            y="29"
+            textAnchor="middle"
+            fontSize="8"
+            fontWeight="900"
+            fill={config.color}
+            fontFamily="'Courier New', Courier, monospace"
+            letterSpacing="1.8"
+          >
+            HONGDAE
+          </text>
+          {/* BOY */}
+          <text
+            x="32"
+            y="40"
+            textAnchor="middle"
+            fontSize="8"
+            fontWeight="900"
+            fill={config.color}
+            fontFamily="'Courier New', Courier, monospace"
+            letterSpacing="1.8"
+          >
+            BOY
+          </text>
+        </svg>
+      </div>
     </div>
   );
 }

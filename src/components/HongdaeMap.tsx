@@ -147,12 +147,6 @@ export default function HongdaeMap() {
     }
   }, [selectedSpot, deleteTokens]);
 
-  const overlayBg = isDark ? 'rgba(28,25,23,0.92)' : 'rgba(255,255,255,0.92)';
-  const titleColor = isDark ? '#f5f5f4' : '#1c1917';
-  const subtitleColor = isDark ? '#78716c' : '#a8a29e';
-  const legendTextColor = isDark ? '#a8a29e' : '#57534e';
-  const countColor = isDark ? '#44403c' : '#d6d3d1';
-
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Map
@@ -169,7 +163,6 @@ export default function HongdaeMap() {
       >
         <NavigationControl position="bottom-right" />
 
-
         {spots.map((spot) => (
           <Marker key={spot.id} longitude={spot.lng} latitude={spot.lat} anchor="center">
             <div
@@ -185,37 +178,101 @@ export default function HongdaeMap() {
       {/* Title overlay */}
       <div
         style={{
-          position: 'absolute', top: 60, left: 12,
-          background: 'rgba(28,25,23,0.92)', backdropFilter: 'blur(8px)',
-          borderRadius: 14, padding: '10px 16px',
-          boxShadow: 'rgba(0,0,0,0.15) 0px 2px 12px', pointerEvents: 'none',
+          position: 'absolute',
+          top: 60,
+          left: 12,
+          background: 'rgba(10,10,10,0.88)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: 14,
+          padding: '10px 14px',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.07)',
+          pointerEvents: 'none',
         }}
       >
-        <p style={{ margin: 0, fontSize: 13, color: titleColor, fontFamily: "'Rock Salt', cursive" }}>
-          Hongdae Boy Map
+        <p style={{
+          margin: 0,
+          fontSize: 20,
+          color: '#FFE500',
+          fontFamily: "'Bebas Neue', cursive",
+          letterSpacing: '0.08em',
+          lineHeight: 1,
+        }}>
+          📍 Hongdae Boy Map
         </p>
-        <p style={{ margin: '2px 0 0', fontSize: 11, color: subtitleColor }}>tap anywhere to spot</p>
+        <p style={{
+          margin: '4px 0 0',
+          fontSize: 10,
+          color: 'rgba(240,235,227,0.4)',
+          fontFamily: "'Courier New', monospace",
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+        }}>
+          tap anywhere to spot
+        </p>
       </div>
 
       {/* Legend */}
       <div
         style={{
-          position: 'absolute', bottom: 24, left: 16,
-          background: overlayBg, backdropFilter: 'blur(8px)',
-          borderRadius: 14, padding: '10px 14px',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.15)', pointerEvents: 'none',
+          position: 'absolute',
+          bottom: 58,
+          left: 12,
+          background: 'rgba(10,10,10,0.88)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: 14,
+          padding: '12px 14px',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.07)',
+          pointerEvents: 'none',
+          minWidth: 148,
         }}
       >
         {(Object.entries(TYPE_CONFIG) as [SpotType, (typeof TYPE_CONFIG)[SpotType]][]).map(([type, config]) => (
-          <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 5 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: legendTextColor, whiteSpace: 'nowrap' }}>{config.label}</span>
+          <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+            <span style={{
+              width: 7,
+              height: 7,
+              borderRadius: '50%',
+              background: config.color,
+              flexShrink: 0,
+              boxShadow: `0 0 5px ${config.color}80`,
+            }} />
+            <span style={{
+              fontSize: 11,
+              color: 'rgba(240,235,227,0.6)',
+              whiteSpace: 'nowrap',
+              fontFamily: "'Courier New', monospace",
+            }}>
+              {config.label}
+            </span>
           </div>
         ))}
-        <p style={{ margin: '6px 0 0', fontSize: 10, color: countColor }}>{spots.length} spotted</p>
-        <div style={{ marginTop: 8, display: 'flex', gap: 10, borderTop: `1px solid ${isDark ? '#292524' : '#e7e5e4'}`, paddingTop: 8 }}>
-          <Link href="/about" style={{ fontSize: 10, color: subtitleColor, textDecoration: 'none' }}>About</Link>
-          <Link href="/privacy" style={{ fontSize: 10, color: subtitleColor, textDecoration: 'none' }}>Privacy</Link>
+
+        <div style={{
+          marginTop: 8,
+          paddingTop: 8,
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <span style={{
+            fontSize: 11,
+            fontFamily: "'Bebas Neue', cursive",
+            color: '#FFE500',
+            letterSpacing: '0.06em',
+          }}>
+            {spots.length} SPOTTED
+          </span>
+          <span style={{ display: 'flex', gap: 10, pointerEvents: 'auto' }}>
+            <Link href="/about" style={{ fontSize: 10, color: 'rgba(240,235,227,0.3)', textDecoration: 'none', fontFamily: "'Courier New', monospace" }}>
+              About
+            </Link>
+            <Link href="/privacy" style={{ fontSize: 10, color: 'rgba(240,235,227,0.3)', textDecoration: 'none', fontFamily: "'Courier New', monospace" }}>
+              Privacy
+            </Link>
+          </span>
         </div>
       </div>
 
@@ -223,17 +280,29 @@ export default function HongdaeMap() {
       <button
         onClick={handleLocate}
         style={{
-          position: 'absolute', bottom: 110, right: 10,
-          width: 30, height: 30, borderRadius: 4,
-          background: isDark ? '#1c1917' : 'white',
-          border: `1px solid ${isDark ? '#3a3330' : '#ddd'}`,
-          boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          opacity: isLocating ? 0.6 : 1,
+          position: 'absolute',
+          bottom: 172,
+          right: 10,
+          width: 34,
+          height: 34,
+          borderRadius: 8,
+          background: 'rgba(10,10,10,0.88)',
+          backdropFilter: 'blur(8px)',
+          border: 'none',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.1)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: isLocating ? 0.5 : 1,
+          transition: 'opacity 0.2s',
         }}
         title="Go to my location"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={isLocating ? '#a8a29e' : '#3B82F6'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke={isLocating ? 'rgba(240,235,227,0.3)' : '#2979FF'}
+          strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
+        >
           <circle cx="12" cy="12" r="4" />
           <line x1="12" y1="2" x2="12" y2="6" />
           <line x1="12" y1="18" x2="12" y2="22" />
