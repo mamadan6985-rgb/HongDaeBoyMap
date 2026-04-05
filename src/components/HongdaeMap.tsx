@@ -6,6 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import TypeSelector from './TypeSelector';
 import StampMarker from './StampMarker';
 import StampDetail from './StampDetail';
+import Link from 'next/link';
 import { Spot, SpotType, TYPE_CONFIG } from '@/types';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -195,6 +196,10 @@ export default function HongdaeMap() {
           </div>
         ))}
         <p style={{ margin: '6px 0 0', fontSize: 10, color: countColor }}>{spots.length} spotted</p>
+        <div style={{ marginTop: 8, display: 'flex', gap: 10, borderTop: `1px solid ${isDark ? '#292524' : '#e7e5e4'}`, paddingTop: 8 }}>
+          <Link href="/about" style={{ fontSize: 10, color: subtitleColor, textDecoration: 'none' }}>About</Link>
+          <Link href="/privacy" style={{ fontSize: 10, color: subtitleColor, textDecoration: 'none' }}>Privacy</Link>
+        </div>
       </div>
 
       {pendingLocation && (
