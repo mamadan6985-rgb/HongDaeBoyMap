@@ -280,49 +280,63 @@ export default function IntroPopup() {
         onTouchEnd={onTouchEnd}
       >
         {/* 헤더 */}
-        <div style={{ padding: '20px 20px 0', position: 'relative', textAlign: 'center' }}>
-          <button onClick={close} style={{ position: 'absolute', right: 16, top: 16, background: 'none', border: 'none', fontSize: 13, color: '#c4c0bb', cursor: 'pointer', padding: '4px 8px' }}>
+        <div style={{ padding: '18px 20px 12px', position: 'relative', textAlign: 'center' }}>
+          <button onClick={close} style={{ position: 'absolute', right: 16, top: 16, background: 'none', border: 'none', fontSize: 12, color: '#d4d0cb', cursor: 'pointer', padding: '4px 8px', letterSpacing: '0.03em' }}>
             Skip
           </button>
-          <p style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 900, color: '#1c1917', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+          <p style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 900, color: '#1c1917', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
             🇰🇷 HONGDAE BOY MAP 📍
           </p>
-          <p style={{ margin: '0 0 14px', fontSize: 13, fontWeight: 600, color: '#78716c' }}>
-            Who did you run into, and where?
+          <p style={{ margin: 0, fontSize: 12, color: '#a8a29e', letterSpacing: '0.01em' }}>
+            Spotted a Hongdae Boy? Tap the map, drop a pin.
           </p>
         </div>
 
-        {/* 캐릭터 이미지 */}
-        <div style={{ height: 210, background: `linear-gradient(180deg, ${config.color}12 0%, ${config.color}06 100%)`, position: 'relative', overflow: 'hidden' }}>
+        {/* 캐릭터 이미지 + 인용 오버레이 */}
+        <div style={{ height: 200, background: `${config.color}10`, position: 'relative', overflow: 'hidden' }}>
           <img
             src={CHARACTER_IMAGES[type]}
             alt={config.label}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
           />
+
+          {/* 하단 그라데이션 + 명언 오버레이 */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            background: 'linear-gradient(transparent, rgba(0,0,0,0.72))',
+            padding: '28px 14px 10px',
+            pointerEvents: 'none',
+          }}>
+            <p style={{ margin: 0, fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: 'white', lineHeight: 1.45, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>
+              {config.quote}
+            </p>
+          </div>
+
           {/* 이전/다음 화살표 */}
           {index > 0 && (
-            <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'white', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button onClick={prev} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               ←
             </button>
           )}
           {!isLast && (
-            <button onClick={next} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'white', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button onClick={next} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.88)', border: 'none', borderRadius: '50%', width: 30, height: 30, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               →
             </button>
           )}
         </div>
 
         {/* 타입 정보 */}
-        <div style={{ padding: '16px 20px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <div style={{ padding: '14px 20px 18px' }}>
+          {/* 타입 이름 — 크고 굵게, 색상 강조 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: config.color, flexShrink: 0 }} />
-            <p style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#1c1917' }}>{config.label}</p>
+            <p style={{ margin: 0, fontSize: 18, fontWeight: 900, color: config.color, letterSpacing: '-0.01em' }}>{config.label}</p>
           </div>
-          <p style={{ margin: '0 0 4px', fontSize: 12, color: '#a8a29e' }}>{config.fashion}</p>
-          <p style={{ margin: '0 0 16px', fontSize: 13, color: '#57534e', fontStyle: 'italic' }}>{config.quote}</p>
+          {/* 패션 */}
+          <p style={{ margin: '0 0 12px', fontSize: 12, color: '#78716c', lineHeight: 1.6 }}>{config.fashion}</p>
 
           {/* 인디케이터 도트 */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
             {TYPES.map((_, i) => (
               <button
                 key={i}
@@ -336,14 +350,14 @@ export default function IntroPopup() {
           {isLast ? (
             <button
               onClick={close}
-              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: config.color, color: 'white', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer' }}
+              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: config.color, color: 'white', fontWeight: 800, fontSize: 14, border: 'none', cursor: 'pointer', letterSpacing: '0.02em' }}
             >
               Let&apos;s spot! 📍
             </button>
           ) : (
             <button
               onClick={next}
-              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#f5f5f4', color: '#1c1917', fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}
+              style={{ width: '100%', padding: '13px 0', borderRadius: 14, background: '#f5f5f4', color: '#57534e', fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}
             >
               Next →
             </button>

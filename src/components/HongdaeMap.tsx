@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
-import Map, { Marker, NavigationControl, type MapMouseEvent } from 'react-map-gl/mapbox';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import Map, { Marker, NavigationControl, type MapMouseEvent, type MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import TypeSelector from './TypeSelector';
 import StampMarker from './StampMarker';
@@ -40,11 +40,13 @@ function removeDeleteToken(spotId: string) {
 }
 
 export default function HongdaeMap() {
+  const mapRef = useRef<MapRef>(null);
   const [spots, setSpots] = useState<Spot[]>([]);
   const [pendingLocation, setPendingLocation] = useState<{ lng: number; lat: number } | null>(null);
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [deleteTokens, setDeleteTokens] = useState<Record<string, string>>({});
   const [isDark, setIsDark] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
 
   useEffect(() => {
     setDeleteTokens(loadDeleteTokens());
@@ -108,6 +110,19 @@ export default function HongdaeMap() {
     [pendingLocation]
   );
 
+  const handleLocate = useCallback(() => {
+    if (!navigator.geolocation) return;
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        mapRef.current?.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 16, duration: 1200 });
+        setIsLocating(false);
+      },
+      () => setIsLocating(false),
+      { timeout: 8000 }
+    );
+  }, []);
+
   const handleDelete = useCallback(async () => {
     if (!selectedSpot) return;
     const token = deleteTokens[selectedSpot.id];
@@ -141,6 +156,7 @@ export default function HongdaeMap() {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Map
+        ref={mapRef}
         key={isDark ? 'dark' : 'light'}
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={INITIAL_VIEW}
@@ -152,6 +168,7 @@ export default function HongdaeMap() {
         cursor={pendingLocation ? 'default' : 'crosshair'}
       >
         <NavigationControl position="bottom-right" />
+
 
         {spots.map((spot) => (
           <Marker key={spot.id} longitude={spot.lng} latitude={spot.lat} anchor="center">
@@ -201,6 +218,29 @@ export default function HongdaeMap() {
           <Link href="/privacy" style={{ fontSize: 10, color: subtitleColor, textDecoration: 'none' }}>Privacy</Link>
         </div>
       </div>
+
+      {/* 현위치 버튼 */}
+      <button
+        onClick={handleLocate}
+        style={{
+          position: 'absolute', bottom: 110, right: 10,
+          width: 30, height: 30, borderRadius: 4,
+          background: isDark ? '#1c1917' : 'white',
+          border: `1px solid ${isDark ? '#3a3330' : '#ddd'}`,
+          boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          opacity: isLocating ? 0.6 : 1,
+        }}
+        title="Go to my location"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={isLocating ? '#a8a29e' : '#3B82F6'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="4" />
+          <line x1="12" y1="2" x2="12" y2="6" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+          <line x1="2" y1="12" x2="6" y2="12" />
+          <line x1="18" y1="12" x2="22" y2="12" />
+        </svg>
+      </button>
 
       {pendingLocation && (
         <TypeSelector
