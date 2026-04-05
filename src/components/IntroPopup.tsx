@@ -287,7 +287,7 @@ export default function IntroPopup() {
           <p style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 900, color: '#1c1917', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
             🇰🇷 HONGDAE BOY MAP 📍
           </p>
-          <p style={{ margin: 0, fontSize: 12, color: '#a8a29e', letterSpacing: '0.01em' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#57534e', letterSpacing: '0.01em', fontWeight: 600 }}>
             Spotted a Hongdae Boy? Tap the map, drop a pin.
           </p>
         </div>
